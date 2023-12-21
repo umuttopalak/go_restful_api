@@ -2,7 +2,6 @@ package albums
 
 import (
 	"example/restfulapi/utils"
-	"net/http"
 	"strconv"
 	"strings"
 
@@ -12,25 +11,28 @@ import (
 var albums []album
 
 func GetAlbums(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, albums)
+	if len(albums) > 0 {
+		utils.NewSuccessResponse(c, albums)
+	} else {
+		utils.NewErrorResponse(c, 404)
+	}
 }
 
 func GetAlbumByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
-		return
+		utils.NewErrorResponse(c, 500)
 	}
 
 	for _, a := range albums {
 		if a.ID == id {
-			c.IndentedJSON(http.StatusOK, a)
+			utils.NewSuccessResponse(c, a)
 			return
 		}
 	}
 
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Data Not Found."})
+	utils.NewErrorResponse(c, 404)
 }
 
 func GetAlbumsByArtist(c *gin.Context) {
@@ -45,29 +47,29 @@ func GetAlbumsByArtist(c *gin.Context) {
 	}
 
 	if len(filtered_albums) > 0 {
-		c.IndentedJSON(http.StatusOK, filtered_albums)
-	} else {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Data Not Found."})
+		utils.NewSuccessResponse(c, filtered_albums)
 	}
+
+	utils.NewErrorResponse(c, 404)
 }
 
 func PostAlbums(c *gin.Context) {
 	var newAlbum album
 
 	if err := c.BindJSON(&newAlbum); err != nil {
-		return
+		utils.NewErrorResponse(c, 400)
 	}
 
 	newAlbum.ID = utils.GetNextID()
 	albums = append(albums, newAlbum)
-	c.IndentedJSON(http.StatusCreated, newAlbum)
+	utils.NewSuccessResponse(c, newAlbum)
 }
 
 func DeleteAlbum(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
+		utils.NewErrorResponse(c, 400)
 	}
 
 	index := -1
@@ -80,8 +82,9 @@ func DeleteAlbum(c *gin.Context) {
 
 	if index != -1 {
 		albums = append(albums[:index], albums[index+1:]...)
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "Todo deleted successfully"})
+		utils.NewSuccessResponse(c, nil)
 	} else {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Data Not Found"})
+		utils.NewErrorResponse(c, 404)
 	}
+
 }
