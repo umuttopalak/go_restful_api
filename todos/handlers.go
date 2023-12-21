@@ -2,7 +2,6 @@ package todos
 
 import (
 	"example/restfulapi/utils"
-	"net/http"
 	"strconv"
 	"strings"
 
@@ -15,35 +14,38 @@ func PostTodo(c *gin.Context) {
 	var newTodo todo
 
 	if err := c.BindJSON(&newTodo); err != nil {
-		return
+		utils.NewErrorResponse(c, 400)
 	}
 
 	newTodo.ID = utils.GetNextID()
 	todos = append(todos, newTodo)
 
-	c.IndentedJSON(http.StatusCreated, newTodo)
+	utils.NewSuccessResponse(c, newTodo)
 }
 
 func GetTodos(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, todos)
+	if len(todos) > 0 {
+		utils.NewSuccessResponse(c, todos)
+	} else {
+		utils.NewErrorResponse(c, 404)
+	}
 }
 
 func GetTodoById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
-		return
+		utils.NewErrorResponse(c, 500)
 	}
 
 	for _, t := range todos {
 		if t.ID == id {
-			c.IndentedJSON(http.StatusOK, t)
+			utils.NewSuccessResponse(c, t)
 			return
 		}
 	}
 
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Data Not Found."})
+	utils.NewErrorResponse(c, 404)
 }
 
 func GetTodoByAuthor(c *gin.Context) {
@@ -58,9 +60,9 @@ func GetTodoByAuthor(c *gin.Context) {
 	}
 
 	if len(filteredTodos) > 0 {
-		c.IndentedJSON(http.StatusOK, filteredTodos)
+		utils.NewSuccessResponse(c, filteredTodos)
 	} else {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Data Not Found."})
+		utils.NewErrorResponse(c, 404)
 	}
 
 }
@@ -69,8 +71,7 @@ func DeleteTodo(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
-		return
+		utils.NewErrorResponse(c, 400)
 	}
 
 	index := -1
@@ -84,8 +85,8 @@ func DeleteTodo(c *gin.Context) {
 
 	if index != -1 {
 		todos = append(todos[:index], todos[index+1:]...)
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "Todo deleted successfully"})
+		utils.NewSuccessResponse(c, nil)
 	} else {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Todo not found"})
+		utils.NewErrorResponse(c, 404)
 	}
 }
