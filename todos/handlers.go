@@ -64,3 +64,28 @@ func GetTodoByAuthor(c *gin.Context) {
 	}
 
 }
+
+func DeleteTodo(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
+		return
+	}
+
+	index := -1
+
+	for i, t := range todos {
+		if t.ID == id {
+			index = i
+			break
+		}
+	}
+
+	if index != -1 {
+		todos = append(todos[:index], todos[index+1:]...)
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Todo deleted successfully"})
+	} else {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Todo not found"})
+	}
+}

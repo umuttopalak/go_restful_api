@@ -62,3 +62,26 @@ func PostAlbums(c *gin.Context) {
 	albums = append(albums, newAlbum)
 	c.IndentedJSON(http.StatusCreated, newAlbum)
 }
+
+func DeleteAlbum(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
+	}
+
+	index := -1
+	for i, a := range albums {
+		if a.ID == id {
+			index = i
+			break
+		}
+	}
+
+	if index != -1 {
+		albums = append(albums[:index], albums[index+1:]...)
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Todo deleted successfully"})
+	} else {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Data Not Found"})
+	}
+}
