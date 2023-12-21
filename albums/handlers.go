@@ -1,8 +1,10 @@
 package albums
 
 import (
+	"example/restfulapi/utils"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,6 +33,24 @@ func GetAlbumByID(c *gin.Context) {
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Data Not Found."})
 }
 
+func GetAlbumsByArtist(c *gin.Context) {
+	artist := c.Param("artist")
+
+	filtered_albums := []album{}
+
+	for _, a := range albums {
+		if strings.EqualFold(artist, a.Artist) {
+			filtered_albums = append(filtered_albums, a)
+		}
+	}
+
+	if len(filtered_albums) > 0 {
+		c.IndentedJSON(http.StatusOK, filtered_albums)
+	} else {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Data Not Found."})
+	}
+}
+
 func PostAlbums(c *gin.Context) {
 	var newAlbum album
 
@@ -38,6 +58,7 @@ func PostAlbums(c *gin.Context) {
 		return
 	}
 
+	newAlbum.ID = utils.GetNextID()
 	albums = append(albums, newAlbum)
 	c.IndentedJSON(http.StatusCreated, newAlbum)
 }
