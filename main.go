@@ -11,7 +11,8 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/albums", albums.GetAlbums)
-	router.GET("/albums/:id", albums.GetAlbumByID)
+	router.GET("/albums/album/:id", albums.GetAlbumByID)
+	router.GET("/albums/:artist", albums.GetAlbumsByArtist)
 	router.POST("/albums", albums.PostAlbums)
 
 	router.POST("/todos", todos.PostTodo)
