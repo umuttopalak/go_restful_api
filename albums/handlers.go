@@ -48,9 +48,10 @@ func GetAlbumsByArtist(c *gin.Context) {
 
 	if len(filtered_albums) > 0 {
 		utils.NewSuccessResponse(c, filtered_albums)
+	} else {
+		utils.NewErrorResponse(c, 404)
 	}
 
-	utils.NewErrorResponse(c, 404)
 }
 
 func PostAlbums(c *gin.Context) {
