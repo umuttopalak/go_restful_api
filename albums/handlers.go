@@ -22,7 +22,7 @@ func GetAlbumByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		utils.NewErrorResponse(c, 500)
+		utils.NewErrorResponse(c, 400)
 	}
 
 	for _, a := range albums {
@@ -84,8 +84,10 @@ func DeleteAlbum(c *gin.Context) {
 	if index != -1 {
 		albums = append(albums[:index], albums[index+1:]...)
 		utils.NewSuccessResponse(c, nil)
+		return
 	} else {
 		utils.NewErrorResponse(c, 404)
+		return
 	}
 
 }
