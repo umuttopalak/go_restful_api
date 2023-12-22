@@ -10,6 +10,20 @@ import (
 
 var albums []album
 
+type ErrorResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
+// @Summary Returns Albums
+// @Description Returns a list of albums
+// @Tags albums
+// @Accept json
+// @Produce json
+// @Success 200 {array} album "List of albums"
+// @Success 400 {object} ErrorResponse
+// @Success 404 {object} ErrorResponse
+// @Router /albums/ [get]
 func GetAlbums(c *gin.Context) {
 	if len(albums) > 0 {
 		utils.NewSuccessResponse(c, albums)
@@ -18,6 +32,16 @@ func GetAlbums(c *gin.Context) {
 	}
 }
 
+// @Summary Returns single album
+// @Description Returns a single album by ID
+// @Tags albums
+// @Accept json
+// @Produce json
+// @Param id path int true "Album ID" Format(int64)
+// @Success 200 {object} album
+// @Success 400 {object} ErrorResponse
+// @Success 404 {object} ErrorResponse
+// @Router /albums/album/{id} [get]
 func GetAlbumByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
@@ -35,6 +59,15 @@ func GetAlbumByID(c *gin.Context) {
 	utils.NewErrorResponse(c, 404)
 }
 
+// @Summary Returns albums by artist
+// @Description Returns a list of albums by a specific artist
+// @Tags albums
+// @Accept json
+// @Produce json
+// @Param artist path string true "Artist name" Format(string)
+// @Success 200 {array} album "List of albums"
+// @Success 404 {object} ErrorResponse
+// @Router /albums/{artist} [get]
 func GetAlbumsByArtist(c *gin.Context) {
 	artist := c.Param("artist")
 
@@ -51,9 +84,17 @@ func GetAlbumsByArtist(c *gin.Context) {
 	} else {
 		utils.NewErrorResponse(c, 404)
 	}
-
 }
 
+// @Summary Creates a new album
+// @Description Creates a new album with the provided data
+// @Tags albums
+// @Accept json
+// @Produce json
+// @Param newAlbum body album true "New album data"
+// @Success 200 {object} album
+// @Success 400 {object} ErrorResponse
+// @Router /albums [post]
 func PostAlbums(c *gin.Context) {
 	var newAlbum album
 
@@ -66,6 +107,15 @@ func PostAlbums(c *gin.Context) {
 	utils.NewSuccessResponse(c, newAlbum)
 }
 
+// @Summary Deletes an album
+// @Description Deletes an album with the specified ID
+// @Tags albums
+// @Accept json
+// @Produce json
+// @Param id path int true "Album ID" Format(int64)
+// @Success 200 {object} album
+// @Success 404 {object} ErrorResponse
+// @Router /albums/{id} [delete]
 func DeleteAlbum(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
@@ -89,5 +139,4 @@ func DeleteAlbum(c *gin.Context) {
 		utils.NewErrorResponse(c, 404)
 		return
 	}
-
 }

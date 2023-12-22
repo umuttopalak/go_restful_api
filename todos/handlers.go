@@ -10,6 +10,20 @@ import (
 
 var todos []todo
 
+type ErrorResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
+// @Summary Creates a new todo
+// @Description Creates a new todo with the provided data
+// @Tags todos
+// @Accept json
+// @Produce json
+// @Param newTodo body todo true "New todo data"
+// @Success 200 {object} todo
+// @Success 400 {object} ErrorResponse
+// @Router /todos [post]
 func PostTodo(c *gin.Context) {
 	var newTodo todo
 
@@ -23,6 +37,14 @@ func PostTodo(c *gin.Context) {
 	utils.NewSuccessResponse(c, newTodo)
 }
 
+// @Summary Returns todos
+// @Description Returns a list of todos
+// @Tags todos
+// @Accept json
+// @Produce json
+// @Success 200 {array} todo "List of todos"
+// @Success 404 {object} ErrorResponse
+// @Router /todos [get]
 func GetTodos(c *gin.Context) {
 	if len(todos) > 0 {
 		utils.NewSuccessResponse(c, todos)
@@ -31,6 +53,15 @@ func GetTodos(c *gin.Context) {
 	}
 }
 
+// @Summary Returns single todo
+// @Description Returns a single todo by ID
+// @Tags todos
+// @Accept json
+// @Produce json
+// @Param id path int true "Todo ID" Format(int64)
+// @Success 200 {object} todo
+// @Success 404 {object} ErrorResponse
+// @Router /todos/todo/{id} [get]
 func GetTodoById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
@@ -48,6 +79,15 @@ func GetTodoById(c *gin.Context) {
 	utils.NewErrorResponse(c, 404)
 }
 
+// @Summary Returns todos by author
+// @Description Returns a list of todos by a specific author
+// @Tags todos
+// @Accept json
+// @Produce json
+// @Param author path string true "Author name" Format(string)
+// @Success 200 {array} todo "List of todos"
+// @Success 404 {object} ErrorResponse
+// @Router /todos/{author} [get]
 func GetTodoByAuthor(c *gin.Context) {
 	author := c.Param("author")
 
@@ -64,9 +104,17 @@ func GetTodoByAuthor(c *gin.Context) {
 	} else {
 		utils.NewErrorResponse(c, 404)
 	}
-
 }
 
+// @Summary Deletes a todo
+// @Description Deletes a todo with the specified ID
+// @Tags todos
+// @Accept json
+// @Produce json
+// @Param id path int true "Todo ID" Format(int64)
+// @Success 200 {object} todo
+// @Success 404 {object} ErrorResponse
+// @Router /todos/{id} [delete]
 func DeleteTodo(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
