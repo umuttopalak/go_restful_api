@@ -1,0 +1,415 @@
+definitions:
+  albums.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  albums.album:
+    properties:
+      artist:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      title:
+        type: string
+    type: object
+  todos.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  todos.todo:
+    properties:
+      author:
+        type: string
+      desc:
+        type: string
+      id:
+        type: integer
+    type: object
+  users.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  users.user:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /albums:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new album with the provided data
+      parameters:
+      - description: New album data
+        in: body
+        name: newAlbum
+        required: true
+        schema:
+          $ref: '#/definitions/albums.album'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/albums.album'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/albums.ErrorResponse'
+      summary: Creates a new album
+      tags:
+      - albums
+  /albums/:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of albums
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of albums
+          schema:
+            items:
+              $ref: '#/definitions/albums.album'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/albums.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/albums.ErrorResponse'
+      summary: Returns Albums
+      tags:
+      - albums
+  /albums/{artist}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of albums by a specific artist
+      parameters:
+      - description: Artist name
+        format: string
+        in: path
+        name: artist
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of albums
+          schema:
+            items:
+              $ref: '#/definitions/albums.album'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/albums.ErrorResponse'
+      summary: Returns albums by artist
+      tags:
+      - albums
+  /albums/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes an album with the specified ID
+      parameters:
+      - description: Album ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/albums.album'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/albums.ErrorResponse'
+      summary: Deletes an album
+      tags:
+      - albums
+  /albums/album/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a single album by ID
+      parameters:
+      - description: Album ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/albums.album'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/albums.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/albums.ErrorResponse'
+      summary: Returns single album
+      tags:
+      - albums
+  /todos:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of todos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of todos
+          schema:
+            items:
+              $ref: '#/definitions/todos.todo'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/todos.ErrorResponse'
+      summary: Returns todos
+      tags:
+      - todos
+    post:
+      consumes:
+      - application/json
+      description: Creates a new todo with the provided data
+      parameters:
+      - description: New todo data
+        in: body
+        name: newTodo
+        required: true
+        schema:
+          $ref: '#/definitions/todos.todo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/todos.todo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/todos.ErrorResponse'
+      summary: Creates a new todo
+      tags:
+      - todos
+  /todos/{author}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of todos by a specific author
+      parameters:
+      - description: Author name
+        format: string
+        in: path
+        name: author
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of todos
+          schema:
+            items:
+              $ref: '#/definitions/todos.todo'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/todos.ErrorResponse'
+      summary: Returns todos by author
+      tags:
+      - todos
+  /todos/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a todo with the specified ID
+      parameters:
+      - description: Todo ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/todos.todo'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/todos.ErrorResponse'
+      summary: Deletes a todo
+      tags:
+      - todos
+  /todos/todo/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a single todo by ID
+      parameters:
+      - description: Todo ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/todos.todo'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/todos.ErrorResponse'
+      summary: Returns single todo
+      tags:
+      - todos
+  /users/:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of users
+          schema:
+            items:
+              $ref: '#/definitions/users.user'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/users.ErrorResponse'
+      summary: Returns users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user with the provided data
+      parameters:
+      - description: New user data
+        in: body
+        name: newUser
+        required: true
+        schema:
+          $ref: '#/definitions/users.user'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.user'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/users.ErrorResponse'
+      summary: Creates a new user
+      tags:
+      - users
+  /users/user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a user with the specified ID
+      parameters:
+      - description: User ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.user'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/users.ErrorResponse'
+      summary: Deletes a user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Returns a single user by ID
+      parameters:
+      - description: User ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.user'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/users.ErrorResponse'
+      summary: Returns single user
+      tags:
+      - users
+swagger: "2.0"

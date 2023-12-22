@@ -9,6 +9,19 @@ import (
 
 var users []user
 
+type ErrorResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
+
+// @Summary Returns users
+// @Description Returns a list of users
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {array} user "List of users"
+// @Success 404 {object} ErrorResponse
+// @Router /users/ [get]
 func GetUsers(c *gin.Context) {
 	if len(users) > 0 {
 		utils.NewSuccessResponse(c, users)
@@ -17,6 +30,15 @@ func GetUsers(c *gin.Context) {
 	}
 }
 
+// @Summary Returns single user
+// @Description Returns a single user by ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID" Format(int64)
+// @Success 200 {object} user
+// @Success 404 {object} ErrorResponse
+// @Router /users/user/{id} [get]
 func GetUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
@@ -33,6 +55,15 @@ func GetUser(c *gin.Context) {
 	utils.NewErrorResponse(c, 404)
 }
 
+// @Summary Creates a new user
+// @Description Creates a new user with the provided data
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param newUser body user true "New user data"
+// @Success 200 {object} user
+// @Success 400 {object} ErrorResponse
+// @Router /users/ [post]
 func PostUser(c *gin.Context) {
 	var newUser user
 
@@ -45,6 +76,15 @@ func PostUser(c *gin.Context) {
 	utils.NewSuccessResponse(c, newUser)
 }
 
+// @Summary Deletes a user
+// @Description Deletes a user with the specified ID
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID" Format(int64)
+// @Success 200 {object} user
+// @Success 404 {object} ErrorResponse
+// @Router /users/user/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
